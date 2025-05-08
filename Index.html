@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas Fingerprinting Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #fingerprint {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+        #canvas-preview {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Canvas Fingerprinting Test</h1>
+
+<button onclick="generateFingerprint()">Generate Fingerprint</button>
+
+<div id="fingerprint"></div>
+<canvas id="canvas-preview" width="300" height="100" style="display:none;"></canvas>
+
+<script>
+function generateFingerprint() {
+    // Create a hidden canvas
+    const canvas = document.getElementById('canvas-preview');
+    const ctx = canvas.getContext('2d');
+
+    // Clear the canvas first
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw some complex graphics
+    ctx.textBaseline = 'top';
+    ctx.font = '20px Arial';
+    ctx.fillStyle = '#f60';
+    ctx.fillRect(100, 10, 150, 30);
+    ctx.fillStyle = '#069';
+    ctx.fillText('Fingerprint123!', 10, 50);
+    ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+    ctx.fillText('Fingerprint123!', 12, 52);
+
+    // Export the canvas image as a data URL
+    const dataURL = canvas.toDataURL();
+
+    // Simple hash function
+    let hash = 0;
+    for (let i = 0; i < dataURL.length; i++) {
+        const char = dataURL.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Keep it 32-bit
+    }
+
+    // Display the fingerprint
+    const fingerprint = hash.toString();
+    document.getElementById('fingerprint').innerText = "Your Canvas Fingerprint: " + fingerprint;
+}
+</script>
+
+</body>
+</html>
